@@ -38,20 +38,20 @@ export default function ContactForm() {
   return (
     <div>
       {status === "success" && (
-        <div className="bg-green-50 border border-green-200 text-green-800 px-6 py-4 rounded-lg mb-6">
+        <div className="bg-green-900/20 border border-green-700 text-green-400 px-6 py-4 rounded-lg mb-6">
           Thank you for your inquiry! I'll get back to you soon.
         </div>
       )}
 
       {status === "error" && (
-        <div className="bg-red-50 border border-red-200 text-red-800 px-6 py-4 rounded-lg mb-6">
+        <div className="bg-red-900/20 border border-red-700 text-red-400 px-6 py-4 rounded-lg mb-6">
           Something went wrong. Please try again or email directly.
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-sm">
-        <div className="mb-6">
-          <label htmlFor="name" className="block text-gray-900 font-bold mb-2 text-base">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
+          <label htmlFor="name" className="block text-neutral-300 font-bold mb-2 text-sm uppercase tracking-wider">
             Name *
           </label>
           <input
@@ -61,12 +61,12 @@ export default function ContactForm() {
             placeholder="Your name"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full px-4 py-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-red-600 focus:border-red-600 text-gray-900 placeholder-gray-500 text-base"
+            className="w-full px-4 py-3 bg-neutral-900 border border-neutral-700 rounded-lg focus:ring-2 focus:ring-ducati-red focus:border-ducati-red text-white placeholder-neutral-500 transition-all"
           />
         </div>
 
-        <div className="mb-6">
-          <label htmlFor="email" className="block text-gray-900 font-bold mb-2 text-base">
+        <div>
+          <label htmlFor="email" className="block text-neutral-300 font-bold mb-2 text-sm uppercase tracking-wider">
             Email *
           </label>
           <input
@@ -76,12 +76,12 @@ export default function ContactForm() {
             placeholder="your@email.com"
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            className="w-full px-4 py-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-red-600 focus:border-red-600 text-gray-900 placeholder-gray-500 text-base"
+            className="w-full px-4 py-3 bg-neutral-900 border border-neutral-700 rounded-lg focus:ring-2 focus:ring-ducati-red focus:border-ducati-red text-white placeholder-neutral-500 transition-all"
           />
         </div>
 
-        <div className="mb-6">
-          <label htmlFor="phone" className="block text-gray-900 font-bold mb-2 text-base">
+        <div>
+          <label htmlFor="phone" className="block text-neutral-300 font-bold mb-2 text-sm uppercase tracking-wider">
             Phone (optional)
           </label>
           <input
@@ -90,12 +90,12 @@ export default function ContactForm() {
             placeholder="(555) 123-4567"
             value={formData.phone}
             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-            className="w-full px-4 py-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-red-600 focus:border-red-600 text-gray-900 placeholder-gray-500 text-base"
+            className="w-full px-4 py-3 bg-neutral-900 border border-neutral-700 rounded-lg focus:ring-2 focus:ring-ducati-red focus:border-ducati-red text-white placeholder-neutral-500 transition-all"
           />
         </div>
 
-        <div className="mb-6">
-          <label htmlFor="message" className="block text-gray-900 font-bold mb-2 text-base">
+        <div>
+          <label htmlFor="message" className="block text-neutral-300 font-bold mb-2 text-sm uppercase tracking-wider">
             Message *
           </label>
           <textarea
@@ -105,16 +105,19 @@ export default function ContactForm() {
             placeholder="Tell me about your interest in the bike..."
             value={formData.message}
             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-            className="w-full px-4 py-3 border-2 border-gray-400 rounded-lg focus:ring-2 focus:ring-red-600 focus:border-red-600 text-gray-900 placeholder-gray-500 text-base"
+            className="w-full px-4 py-3 bg-neutral-900 border border-neutral-700 rounded-lg focus:ring-2 focus:ring-ducati-red focus:border-ducati-red text-white placeholder-neutral-500 transition-all resize-none"
           />
         </div>
 
         <button
           type="submit"
           disabled={status === "loading"}
-          className="w-full bg-gray-900 text-white py-4 rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+          className="w-full relative group bg-ducati-red text-white font-bold uppercase tracking-[0.2em] text-sm overflow-hidden clip-angled transition-all duration-300 hover:bg-ducati-accent hover:shadow-[0_0_20px_rgba(213,0,0,0.4)] px-10 py-5 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {status === "loading" ? "Sending..." : "Send Message"}
+          <span className="relative z-10">
+            {status === "loading" ? "Sending..." : "Send Message"}
+          </span>
+          <div className="absolute top-0 -left-[100%] w-1/2 h-full bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-[-20deg] group-hover:left-[200%] transition-all duration-700 ease-in-out"></div>
         </button>
       </form>
     </div>
