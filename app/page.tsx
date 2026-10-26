@@ -532,6 +532,7 @@ export default function Home() {
               <div className="border-t border-[#E2DDD5] divide-y divide-[#E2DDD5] text-sm">
                 {[
                   ["Model Year & Trim", "2017 Ducati Scrambler Café Racer"],
+                  ["VIN", "ZDM15ANM7HB020905"],
                   ["Factory Colorway", "'Black Coffee' w/ Gold Wheels & Red Pinstripe"],
                   ["Odometer", "Under 1,000 original miles"],
                   ["Engine Type", "Air/oil-cooled 90° L-Twin, 2 Desmodromic valves/cyl"],
