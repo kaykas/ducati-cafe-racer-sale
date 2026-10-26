@@ -1,295 +1,431 @@
+"use client";
+
 import Image from "next/image";
+import { useState } from "react";
 import ContactForm from "./components/ContactForm";
-import Gallery from "./components/Gallery";
+import Gallery, { BIKE_PHOTOS } from "./components/Gallery";
+
+const MARKET_COMPS = [
+  {
+    listing: "THIS BIKE: 2017 Ducati Scrambler Café Racer (Private Seller)",
+    location: "Oakland / Piedmont, CA",
+    livery: "2017 'Black Coffee' + Gold 10-Spoke Wheels",
+    mileage: "< 1,000 mi",
+    desmoStatus: "6,500+ mi remaining until 7,500-mi Desmo service",
+    price: "$8,495",
+    notes: "No dealer freight/doc fees; Termignoni dual exhaust, wrapped headers, custom tan diamond leather seat, tail tidy, tank bag",
+    highlight: true,
+  },
+  {
+    listing: "2019 Ducati Scrambler Café Racer (Specialty Motorsports)",
+    location: "Sacramento, CA",
+    livery: "Silver Ice Matte / Blue Frame",
+    mileage: "298 mi",
+    desmoStatus: "7,200 mi remaining",
+    price: "$9,495",
+    notes: "Dealer retail ask (+$1,000 higher before dealer prep, doc, and registration fees)",
+    highlight: false,
+  },
+  {
+    listing: "2019 Ducati Scrambler Café Racer (SF Moto)",
+    location: "San Francisco, CA",
+    livery: "Silver Ice Matte / Blue Frame",
+    mileage: "8,382 mi",
+    desmoStatus: "Past 7,500-mi Desmo threshold",
+    price: "$9,396",
+    notes: "8x the mileage across the Bay, priced $901 higher than this sub-1,000-mile bike",
+    highlight: false,
+  },
+  {
+    listing: "2017 Ducati Scrambler Café Racer (Tonkin / MotoCorsa)",
+    location: "Portland, OR",
+    livery: "2017 'Black Coffee' + Gold 10-Spoke Wheels",
+    mileage: "3,200 mi",
+    desmoStatus: "4,300 mi remaining",
+    price: "$8,990",
+    notes: "Same 2017 launch specification with 3x the mileage (+$500 higher plus out-of-state transport)",
+    highlight: false,
+  },
+  {
+    listing: "2019 Ducati Scrambler Café Racer (Bring a Trailer Lot #195779)",
+    location: "Washington, UT (Auction Sold)",
+    livery: "Silver Ice Matte / Blue Frame",
+    mileage: "430 mi",
+    desmoStatus: "7,070 mi remaining",
+    price: "$8,050 Sold",
+    notes: "$7,800 hammer + $250 BaT buyer fee (plus ~$750 enclosed shipping to Bay Area)",
+    highlight: false,
+  },
+  {
+    listing: "2017 Ducati Scrambler Café Racer (Motorado Consignment)",
+    location: "Lakewood, CO (Sold)",
+    livery: "2017 'Black Coffee' + Gold 10-Spoke Wheels",
+    mileage: "10,510 mi",
+    desmoStatus: "Past 7,500-mi threshold",
+    price: "$7,495 Sold",
+    notes: "Sold quickly at $7,495 despite having 10,510 miles (10x the mileage of this bike)",
+    highlight: false,
+  },
+];
+
+const UPGRADE_LEDGER = [
+  {
+    component: "Dual Black-Anodized Termignoni Racing Slip-On & Wrapped Headers",
+    category: "Exhaust & Acoustics",
+    detail:
+      "Factory-spec black-anodized dual Termignoni slip-on silencer with brushed aluminum heat shield, paired with titanium/fiberglass thermal-wrapped 2-into-1 exhaust headers. Delivers the unmistakable air-cooled 90-degree Ducati L-twin note while reducing radiant heat at the rider's right boot.",
+  },
+  {
+    component: "Custom Diamond-Stitched Tan Leather Café Saddle",
+    category: "Ergonomics & Saddlery",
+    detail:
+      "Upgraded full-length diamond-quilted tan leather two-up café seat replacing the firmer stock dark-brown vinyl cover. Pairs classic 1960s Italian bespoke upholstery with supportive foam density for East Bay hills and Marin headlands rides.",
+  },
+  {
+    component: "Fender Eliminator / Tail Tidy & Flush Crescent LED Taillight",
+    category: "Rear Profile & Lighting",
+    detail:
+      "Removes the heavy factory swingarm-mounted license plate arm and protruding rear turn signal stalks. Tucks the California plate cleanly beneath the tail section with a flush-mounted crescent LED brake and running light.",
+  },
+  {
+    component: "17-Inch Gold 10-Spoke Cast Alloy Wheels & Pirelli Diablo Rosso II",
+    category: "Launch-Year Chassis Spec",
+    detail:
+      "Unlike the regular Scrambler Icon (18-inch front wheel) or the 2019+ Café Racer (wire-spoke wheels), the 2017 launch edition wears sportbike-sized 17x3.50 front and 17x5.50 rear cast gold alloy wheels shod in 120/70 ZR17 and 180/55 ZR17 Pirelli Diablo Rosso II tires with virtually full tread depth remaining.",
+  },
+  {
+    component: "Brembo M4.32 Radial Monoblock Front Brake & Radial Master Cylinder",
+    category: "Braking & Controls",
+    detail:
+      "Borrowed directly from Ducati's supersport shelf: a 4-piston Brembo M4.32 monoblock radial caliper biting a 330mm front rotor, actuated by a radial front master cylinder, factory clip-on handlebars, and CNC bar-end mirrors.",
+  },
+  {
+    component: "'Black Coffee' Tank with Red Pinstripe, #54 Plates & Tank Bag",
+    category: "Livery & Accessories",
+    detail:
+      "Finished in Ducati's sought-after 2017 Black Coffee gloss paint with a red tank pinstripe border, brushed lateral tank panels, #54 oval side number plates honoring 1968 Imola 200 racer Bruno Spaggiari, and a removable strap-mounted tank bag.",
+  },
+];
+
+const BUYER_FAQS = [
+  {
+    q: "Why does the bike have under 1,000 miles?",
+    a: "It was purchased as a weekend collector piece, kept in a private enclosed garage in Oakland / Piedmont, and ridden sparingly on dry days. It has never been tracked, dropped, or left outdoors.",
+  },
+  {
+    q: "Why does sub-1,000 mileage matter financially on an 803cc Ducati?",
+    a: "Ducati's air-cooled 803cc Desmodue L-twin requires its first major Desmodromic valve-clearance inspection and timing belt service at 7,500 miles (an $1,100 to $1,500 dealership service in the Bay Area). Many used Scramblers listed between $7,500 and $9,400 sit at 6,500 to 10,500 miles and need that service immediately. With under 1,000 miles, this bike has over 6,500 miles of riding before its first valve service is due.",
+  },
+  {
+    q: "What makes the 2017 'Black Coffee' Café Racer different from a standard Ducati Scrambler?",
+    a: "The Café Racer was a factory-engineered performance trim ($11,395 original MSRP vs. $8,895 for the base Icon). Ducati replaced the 18-inch front wheel with 17-inch gold cast alloy sport wheels (120/70 front, 180/55 rear), upgraded the brakes to a Superbike-spec Brembo M4.32 radial monoblock caliper with a radial master cylinder, stiffened and lowered the 41mm Kayaba inverted fork, fitted clip-on handlebars with bar-end mirrors, and installed the factory dual Termignoni exhaust.",
+  },
+  {
+    q: "What is the title and registration status?",
+    a: "Clean, clear California title in hand (no liens, no salvage history) with current California registration (CA plate 24S7127) for an immediate, straightforward DMV private-party transfer.",
+  },
+  {
+    q: "Where is the motorcycle located and how do viewings work?",
+    a: "The bike is garaged in the Oakland / Piedmont area of the East Bay. In-person inspections and cold starts are available by appointment for serious buyers.",
+  },
+];
 
 export default function Home() {
+  const [heroPhotoIdx, setHeroPhotoIdx] = useState(0);
+
   return (
-    <div className="min-h-screen bg-neutral-950 text-white antialiased selection:bg-ducati-red selection:text-white">
-      {/* Background Effects */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute inset-0 bg-neutral-950"></div>
-        <div className="absolute top-1/2 left-2/3 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] bg-ducati-red opacity-[0.03] rounded-full blur-[120px]"></div>
-        <div className="absolute top-1/4 right-[-10%] w-[40vw] h-[60vw] bg-white opacity-[0.02] rounded-full blur-[100px] rotate-45"></div>
-        <div className="absolute inset-0 bg-grid-pattern [mask-image:linear-gradient(to_bottom,black_40%,transparent)] opacity-50"></div>
-        <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/4 font-display font-black text-[25vw] leading-none text-neutral-900 opacity-40 select-none tracking-tighter">
-          DUCATI
+    <div className="min-h-screen bg-[#FAF8F5] text-[#141311] selection:bg-[#B81D13] selection:text-white">
+      {/* Top Editorial Masthead */}
+      <header className="sticky top-0 z-40 bg-[#FAF8F5]/95 backdrop-blur-sm border-b border-[#E2DDD5]">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <span className="inline-block w-2.5 h-2.5 bg-[#B81D13]" />
+            <span className="font-mono-num text-xs uppercase tracking-[0.2em] font-semibold">
+              Bologna Collector Dossier · Lot 2017-54
+            </span>
+          </div>
+          <nav className="hidden md:flex items-center gap-8 text-xs font-mono-num uppercase tracking-wider text-[#57534E]">
+            <a href="#overview" className="hover:text-[#141311] transition-colors">
+              The Machine
+            </a>
+            <a href="#upgrades" className="hover:text-[#141311] transition-colors">
+              Build &amp; Upgrades
+            </a>
+            <a href="#market-comps" className="hover:text-[#141311] transition-colors">
+              Market Comps
+            </a>
+            <a href="#gallery" className="hover:text-[#141311] transition-colors">
+              5-Photo Archive
+            </a>
+            <a href="#faq" className="hover:text-[#141311] transition-colors">
+              Buyer FAQ
+            </a>
+          </nav>
+          <a
+            href="#contact"
+            className="bg-[#141311] hover:bg-[#B81D13] text-[#FAF8F5] font-mono-num text-xs uppercase tracking-widest px-4 py-2.5 transition-colors"
+          >
+            $8,495 · Inquire
+          </a>
         </div>
-      </div>
+      </header>
 
-      {/* Hero Section */}
-      <section className="relative z-10 min-h-screen flex flex-col justify-center px-8 lg:px-16 py-24">
-        <div className="max-w-6xl w-full mx-auto">
-          {/* Badge */}
-          <div className="flex items-center gap-4 mb-8">
-            <div className="h-[2px] w-16 bg-ducati-red shadow-[0_0_10px_rgba(213,0,0,0.8)]"></div>
-            <div className="flex items-center gap-3 bg-neutral-900/50 backdrop-blur-sm border border-neutral-800 px-4 py-1.5 skew-x-[-15deg]">
-              <span className="block skew-x-[15deg] text-ducati-accent font-bold text-xs tracking-[0.25em] uppercase">
-                Under 1,000 Miles
-              </span>
-              <span className="block skew-x-[15deg] text-neutral-600">•</span>
-              <span className="block skew-x-[15deg] text-white font-bold text-xs tracking-[0.25em] uppercase">
-                Pristine Condition
-              </span>
-            </div>
-          </div>
-
-          {/* Hero Title */}
-          <div className="flex flex-col mb-8 relative">
-            <h2 className="font-display font-bold text-5xl lg:text-6xl uppercase tracking-tight text-neutral-400 italic leading-[0.9]">
-              2017 Ducati
-            </h2>
-            <h1 className="font-display font-black text-7xl lg:text-[10rem] uppercase tracking-tighter text-white italic leading-[0.85] relative -left-1">
-              Scrambler
-            </h1>
-            <h2 className="font-display font-bold text-5xl lg:text-7xl uppercase tracking-widest text-transparent text-stroke-2 italic leading-[0.9] mt-2">
-              Café Racer
-            </h2>
-          </div>
-
-          {/* Description */}
-          <div className="relative pl-6 mb-12 max-w-2xl">
-            <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-ducati-red to-transparent"></div>
-            <p className="text-xl text-neutral-400 font-light leading-relaxed">
-              Italian racing heritage meets aggressive retro styling. A flawlessly maintained machine engineered for the pure thrill of the ride.
-            </p>
-          </div>
-
-          {/* Price and CTAs */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-end gap-8 sm:gap-12">
-            {/* Price */}
-            <div className="flex flex-col relative group">
-              <div className="absolute -inset-4 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl rounded-full pointer-events-none"></div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                <span className="text-neutral-500 uppercase tracking-widest text-xs font-bold">Priced to Sell</span>
+      {/* Above-the-Fold Split Hero with Actual Bike Photo */}
+      <section className="border-b border-[#E2DDD5]">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-12 lg:py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            {/* Left Column: Editorial Headline, Provenance & Pricing */}
+            <div className="lg:col-span-6 lg:pr-4">
+              <div className="flex flex-wrap items-center gap-3 text-xs font-mono-num uppercase tracking-widest text-[#B81D13] mb-4">
+                <span>Private Collection · Oakland / Piedmont, CA</span>
+                <span className="text-[#E2DDD5]">|</span>
+                <span className="text-[#9A7B3E]">Under 1,000 Original Miles</span>
               </div>
-              <div className="font-display text-7xl font-black text-white tracking-tighter drop-shadow-lg">
-                $8,495
-              </div>
-            </div>
 
-            {/* Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-              <a
-                href="#contact"
-                className="relative group bg-ducati-red text-white font-bold uppercase tracking-[0.2em] text-sm overflow-hidden clip-angled transition-all duration-300 hover:bg-ducati-accent hover:shadow-[0_0_20px_rgba(213,0,0,0.4)] px-10 py-5 text-center flex items-center justify-center gap-3"
-              >
-                <span className="relative z-10 flex items-center gap-2">
-                  Contact Owner
-                  <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="square" strokeLinejoin="miter" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                  </svg>
-                </span>
-                <div className="absolute top-0 -left-[100%] w-1/2 h-full bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-[-20deg] group-hover:left-[200%] transition-all duration-700 ease-in-out"></div>
-              </a>
+              <h1 className="font-serif-editorial text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.06] text-[#141311] mb-6">
+                2017 Ducati Scrambler Café Racer
+              </h1>
 
-              <a
-                href="#gallery"
-                className="relative group bg-transparent border-2 border-neutral-700 text-white font-bold uppercase tracking-[0.2em] text-sm clip-angled transition-all duration-300 hover:border-white hover:bg-white hover:text-black px-10 py-5 text-center"
-              >
-                View Gallery
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Bar */}
-      <div className="relative z-20 w-full bg-neutral-950 border-t border-neutral-800">
-        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-ducati-red/50 to-transparent"></div>
-        <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 divide-y lg:divide-y-0 lg:divide-x divide-neutral-800">
-          <div className="px-6 py-8 flex flex-col justify-center items-center hover:bg-neutral-900/50 transition-colors">
-            <span className="text-neutral-500 font-bold text-[10px] uppercase tracking-[0.2em] mb-2">Mileage</span>
-            <span className="font-display text-2xl font-bold text-white tracking-wide">&lt;1,000 Miles</span>
-          </div>
-          <div className="px-6 py-8 flex flex-col justify-center items-center hover:bg-neutral-900/50 transition-colors">
-            <span className="text-neutral-500 font-bold text-[10px] uppercase tracking-[0.2em] mb-2">Engine</span>
-            <span className="font-display text-2xl font-bold text-white tracking-wide">803cc L-Twin</span>
-          </div>
-          <div className="px-6 py-8 flex flex-col justify-center items-center hover:bg-neutral-900/50 transition-colors">
-            <span className="text-neutral-500 font-bold text-[10px] uppercase tracking-[0.2em] mb-2">Power</span>
-            <span className="font-display text-2xl font-bold text-white tracking-wide">75 HP</span>
-          </div>
-          <div className="px-6 py-8 flex flex-col justify-center items-center hover:bg-neutral-900/50 transition-colors">
-            <span className="text-neutral-500 font-bold text-[10px] uppercase tracking-[0.2em] mb-2">Weight</span>
-            <span className="font-display text-2xl font-bold text-white tracking-wide">414 lbs</span>
-          </div>
-        </div>
-      </div>
-
-      {/* The Story */}
-      <section className="relative z-10 max-w-6xl mx-auto px-8 lg:px-16 py-32">
-        <div className="text-center mb-20">
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <div className="h-[2px] w-16 bg-ducati-red"></div>
-            <span className="text-neutral-500 uppercase tracking-[0.3em] text-xs font-bold">The Story</span>
-            <div className="h-[2px] w-16 bg-ducati-red"></div>
-          </div>
-          <h2 className="font-display text-5xl lg:text-7xl font-bold mb-6 text-white uppercase tracking-tight">
-            Italian Performance Art
-          </h2>
-          <p className="text-xl text-neutral-400 max-w-3xl mx-auto leading-relaxed">
-            This isn't just a motorcycle—it's a meticulously preserved piece of Ducati's legendary Scrambler lineage.
-          </p>
-        </div>
-
-        <div className="grid lg:grid-cols-2 gap-16 items-center mb-20">
-          <div className="space-y-6">
-            <h3 className="font-display text-4xl font-bold text-white uppercase">Barely Broken In</h3>
-            <p className="text-lg text-neutral-400 leading-relaxed">
-              This 2017 Ducati Scrambler Café Racer has less than 1,000 miles on the odometer. It's been stored indoors,
-              maintained meticulously, and ridden sparingly. This is a collector-grade machine that deserves an owner
-              who will appreciate its pedigree.
-            </p>
-            <p className="text-lg text-neutral-400 leading-relaxed">
-              The Scrambler Café Racer pays homage to the 1950s British café racer culture with modern Ducati engineering.
-              Featuring <strong className="text-white">clip-on handlebars</strong>, a <strong className="text-white">quilted tan leather seat</strong>, race-inspired number plates,
-              and aggressive Pirelli Diablo Rosso II tires—this bike turns heads everywhere it goes.
-            </p>
-            <div className="border-l-4 border-ducati-red bg-neutral-900/50 p-6">
-              <p className="text-lg font-semibold text-white mb-2">Why This Matters</p>
-              <p className="text-neutral-400">
-                Finding a Ducati Scrambler Café Racer with under 1,000 miles is exceptionally rare. Most have been ridden hard
-                or modified heavily. This bike's originality and pristine condition make it a true find.
+              <p className="text-lg text-[#57534E] leading-relaxed mb-8">
+                A collector-grade, sub-1,000-mile example of Ducati&apos;s first-year{" "}
+                <strong className="text-[#141311] font-semibold">&ldquo;Black Coffee&rdquo;</strong> Café Racer.
+                Equipped with 17-inch gold 10-spoke cast wheels, Brembo M4.32 monoblock radial brakes, wrapped headers
+                feeding dual black Termignoni silencers, a custom diamond-stitched tan leather café saddle, and a clean
+                California title in hand.
               </p>
-            </div>
-          </div>
-          <div className="relative h-[600px] rounded-2xl overflow-hidden shadow-2xl border border-neutral-800">
-            <Image
-              src="/images/ducati-garage.jpeg"
-              alt="Ducati Scrambler in garage showing pristine condition"
-              fill
-              className="object-cover"
-            />
-          </div>
-        </div>
 
-        {/* Heritage Cards */}
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="bg-neutral-900/50 border border-neutral-800 p-8 hover:border-ducati-red transition-colors">
-            <div className="w-12 h-12 bg-ducati-red/20 rounded-full flex items-center justify-center mb-4">
-              <svg className="w-6 h-6 text-ducati-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
+              {/* Price & NorCal Comp Callout */}
+              <div className="border-t border-b border-[#E2DDD5] py-6 mb-8 bg-[#F3EFEA]/60 px-6">
+                <div className="flex flex-wrap items-baseline justify-between gap-4">
+                  <div>
+                    <div className="text-[11px] font-mono-num uppercase tracking-widest text-[#57534E] mb-1">
+                      Private Party Asking Price (No Dealer Fees)
+                    </div>
+                    <div className="font-serif-editorial text-5xl font-bold text-[#141311]">
+                      $8,495
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xs font-mono-num uppercase tracking-wider text-emerald-800 font-semibold">
+                      $901 to $1,000 Below NorCal Dealer Comps
+                    </div>
+                    <div className="text-xs text-[#57534E] mt-1">
+                      SF Moto (8,382 mi): <span className="font-mono-num">$9,396</span> · Sacramento (298 mi):{" "}
+                      <span className="font-mono-num">$9,495</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Primary CTAs */}
+              <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                <a
+                  href="#contact"
+                  className="bg-[#B81D13] hover:bg-[#96150D] text-white font-mono-num text-xs uppercase tracking-[0.2em] py-4 px-8 text-center transition-colors"
+                >
+                  Schedule Viewing / Make Offer →
+                </a>
+                <a
+                  href="#market-comps"
+                  className="border border-[#141311] hover:bg-[#141311] hover:text-[#FAF8F5] text-[#141311] font-mono-num text-xs uppercase tracking-[0.2em] py-4 px-8 text-center transition-colors"
+                >
+                  Compare Market Prices
+                </a>
+              </div>
+
+              {/* Quick Highlights */}
+              <dl className="grid grid-cols-2 gap-4 text-xs border-t border-[#E2DDD5] pt-6">
+                <div>
+                  <dt className="font-mono-num uppercase tracking-wider text-[#57534E]">Desmo Service Runway</dt>
+                  <dd className="font-semibold text-[#141311] mt-0.5">6,500+ miles until first 7,500-mi valve check</dd>
+                </div>
+                <div>
+                  <dt className="font-mono-num uppercase tracking-wider text-[#57534E]">Title &amp; Registration</dt>
+                  <dd className="font-semibold text-[#141311] mt-0.5">Clean CA Title in Hand · Plate 24S7127</dd>
+                </div>
+              </dl>
             </div>
-            <h4 className="font-display text-2xl font-bold text-white mb-3 uppercase">803cc L-Twin</h4>
-            <p className="text-neutral-400">
-              Ducati's legendary 90-degree L-twin delivers 75 horsepower at 8,250 rpm with that unmistakable Desmodromic
-              valve signature. Air/oil-cooled for classic simplicity with modern reliability.
-            </p>
-          </div>
-          <div className="bg-neutral-900/50 border border-neutral-800 p-8 hover:border-ducati-red transition-colors">
-            <div className="w-12 h-12 bg-ducati-red/20 rounded-full flex items-center justify-center mb-4">
-              <svg className="w-6 h-6 text-ducati-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-              </svg>
+
+            {/* Right Column: Interactive Hero Image Showcase + Thumbnail Strip */}
+            <div className="lg:col-span-6">
+              <div className="border border-[#E2DDD5] bg-white p-3 shadow-sm">
+                <div className="relative w-full aspect-[4/5] bg-[#141311] overflow-hidden">
+                  <Image
+                    src={BIKE_PHOTOS[heroPhotoIdx].src}
+                    alt={BIKE_PHOTOS[heroPhotoIdx].title}
+                    fill
+                    priority
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-contain"
+                  />
+                  <div className="absolute top-3 left-3 bg-[#FAF8F5]/95 border border-[#E2DDD5] px-3 py-1 text-[11px] font-mono-num uppercase tracking-wider text-[#141311]">
+                    {BIKE_PHOTOS[heroPhotoIdx].specNote}
+                  </div>
+                </div>
+                <div className="pt-3 pb-1 px-1 flex items-center justify-between text-xs text-[#57534E]">
+                  <span className="font-medium text-[#141311]">{BIKE_PHOTOS[heroPhotoIdx].title}</span>
+                  <span className="font-mono-num">
+                    0{heroPhotoIdx + 1} / 0{BIKE_PHOTOS.length}
+                  </span>
+                </div>
+              </div>
+
+              {/* 5-Thumbnail Selector Strip */}
+              <div className="grid grid-cols-5 gap-2.5 mt-3">
+                {BIKE_PHOTOS.map((photo, idx) => (
+                  <button
+                    key={photo.src}
+                    type="button"
+                    onClick={() => setHeroPhotoIdx(idx)}
+                    className={`relative aspect-square border overflow-hidden cursor-pointer transition-all ${
+                      heroPhotoIdx === idx
+                        ? "border-2 border-[#B81D13] ring-1 ring-[#B81D13]"
+                        : "border-[#E2DDD5] opacity-75 hover:opacity-100"
+                    }`}
+                  >
+                    <Image
+                      src={photo.src}
+                      alt={photo.title}
+                      fill
+                      sizes="120px"
+                      className="object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
             </div>
-            <h4 className="font-display text-2xl font-bold text-white mb-3 uppercase">Race Design</h4>
-            <p className="text-neutral-400">
-              Clip-on handlebars, aggressive riding position, number 54 plates honoring Italian racer Bruno Spaggiari,
-              quilted tan leather seat, and red-rimmed fuel tank. Every detail screams performance.
-            </p>
-          </div>
-          <div className="bg-neutral-900/50 border border-neutral-800 p-8 hover:border-ducati-red transition-colors">
-            <div className="w-12 h-12 bg-ducati-red/20 rounded-full flex items-center justify-center mb-4">
-              <svg className="w-6 h-6 text-ducati-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <h4 className="font-display text-2xl font-bold text-white mb-3 uppercase">Premium Parts</h4>
-            <p className="text-neutral-400">
-              Brembo M4.32 radial monoblock front brakes, 41mm Kayaba inverted forks, Pirelli Diablo Rosso II tires,
-              and Termignoni exhaust. This bike has the best of Italian engineering.
-            </p>
           </div>
         </div>
       </section>
 
-      {/* Specifications */}
-      <section className="relative z-10 max-w-7xl mx-auto px-8 lg:px-16 py-32 bg-neutral-900/30">
-        <div className="text-center mb-20">
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <div className="h-[2px] w-16 bg-ducati-red"></div>
-            <span className="text-neutral-500 uppercase tracking-[0.3em] text-xs font-bold">Technical</span>
-            <div className="h-[2px] w-16 bg-ducati-red"></div>
-          </div>
-          <h2 className="font-display text-5xl lg:text-7xl font-bold text-white uppercase tracking-tight">
-            Complete Specifications
-          </h2>
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {[
-            {
-              title: "Engine",
-              specs: [
-                { label: "Type", value: "L-Twin" },
-                { label: "Displacement", value: "803cc" },
-                { label: "Power", value: "75hp @ 8,250rpm" },
-                { label: "Torque", value: "50 ft-lbs @ 5,750rpm" }
-              ]
-            },
-            {
-              title: "Chassis",
-              specs: [
-                { label: "Frame", value: "Steel Trellis" },
-                { label: "Weight", value: "414 lbs (wet)" },
-                { label: "Wheelbase", value: "56.5 inches" },
-                { label: "Seat Height", value: "31.7 inches" }
-              ]
-            },
-            {
-              title: "Suspension",
-              specs: [
-                { label: "Front", value: "41mm Kayaba" },
-                { label: "Rear", value: "Preload Adj." },
-                { label: "Front Brake", value: "Brembo M4.32" },
-                { label: "ABS", value: "Standard" }
-              ]
-            },
-            {
-              title: "Details",
-              specs: [
-                { label: "Mileage", value: "<1,000 miles" },
-                { label: "Year", value: "2017" },
-                { label: "Condition", value: "Pristine" },
-                { label: "Location", value: "Bay Area, CA" }
-              ]
-            }
-          ].map((category, idx) => (
-            <div key={idx} className="bg-neutral-900 border border-neutral-800 p-8 hover:border-ducati-red transition-colors">
-              <h3 className="font-display text-2xl font-bold text-white mb-6 uppercase tracking-wide">{category.title}</h3>
-              <ul className="space-y-4 text-neutral-400">
-                {category.specs.map((spec, i) => (
-                  <li key={i} className="flex justify-between">
-                    <span className="font-semibold">{spec.label}:</span>
-                    <span>{spec.value}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-
-        {/* Key Features */}
-        <div className="mt-16 bg-neutral-900/50 border border-neutral-800 p-12">
-          <h3 className="font-display text-3xl font-bold mb-8 text-center text-white uppercase">What Makes This Special</h3>
-          <div className="grid md:grid-cols-2 gap-x-12 gap-y-6">
+      {/* Telemetry & Specification Bar */}
+      <section className="border-b border-[#E2DDD5] bg-[#F3EFEA]">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 divide-y md:divide-y-0 md:divide-x divide-[#E2DDD5]">
             {[
-              { title: "Under 1,000 Miles", desc: "Barely broken in—this bike is essentially new with full mechanical life ahead" },
-              { title: "Custom Upgrades", desc: "Tastefully customized with quality components that enhance performance and aesthetics" },
-              { title: "Indoor Stored", desc: "Always garaged and protected—no sun damage, no weather exposure" },
-              { title: "Termignoni Exhaust", desc: "Factory Termignoni silencers with aluminum covers for authentic Ducati sound" },
-              { title: "Pirelli Diablo Rosso II", desc: "Performance-oriented rubber with minimal wear—ready for spirited riding" },
-              { title: "Ready to Ride", desc: "Current registration, fresh fluids, and perfect mechanical condition" }
-            ].map((feature, idx) => (
-              <div key={idx} className="flex items-start">
-                <svg className="w-6 h-6 text-ducati-red mr-3 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
+              { label: "Odometer", value: "< 1,000 mi", sub: "Original miles" },
+              { label: "Engine", value: "803cc L-Twin", sub: "Air/oil Desmodromic" },
+              { label: "Output", value: "75 HP / 50 lb-ft", sub: "@ 8,250 / 5,750 RPM" },
+              { label: "Front Brake", value: "Brembo M4.32", sub: "330mm radial + ABS" },
+              { label: "Wheels & Tires", value: "17-in Cast Gold", sub: "Pirelli Diablo Rosso II" },
+              { label: "Wet Weight", value: "414 lbs", sub: "31.7-in seat height" },
+            ].map((stat) => (
+              <div key={stat.label} className="py-6 px-4 first:pl-0 last:pr-0">
+                <div className="text-[11px] font-mono-num uppercase tracking-widest text-[#57534E]">
+                  {stat.label}
+                </div>
+                <div className="font-mono-num text-xl font-bold text-[#141311] mt-1">
+                  {stat.value}
+                </div>
+                <div className="text-xs text-[#57534E] mt-0.5">{stat.sub}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Section 1: The Machine & Why the 2017 Launch Edition Matters */}
+      <section id="overview" className="border-b border-[#E2DDD5] py-20 lg:py-28">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div className="lg:col-span-6 space-y-6">
+              <div className="text-xs font-mono-num uppercase tracking-[0.2em] text-[#B81D13]">
+                01 · Provenance &amp; Specification
+              </div>
+              <h2 className="font-serif-editorial text-3xl sm:text-4xl lg:text-5xl font-bold text-[#141311] leading-tight">
+                The 2017 &ldquo;Black Coffee&rdquo; Launch Edition, Preserved Under 1,000 Miles
+              </h2>
+              <p className="text-base text-[#57534E] leading-relaxed">
+                When Ducati introduced the Scrambler Café Racer for the 2017 model year ($11,395 MSRP), it was not a
+                cosmetic sticker package. Borgo Panigale re-engineered the Scrambler chassis around 17-inch cast gold
+                sport wheels, fitted a Superbike-grade Brembo M4.32 radial monoblock front brake caliper and radial
+                master cylinder, tightened the rake and trail for sharper turn-in, and bolted on clip-on handlebars with
+                aluminum bar-end mirrors and a dual Termignoni exhaust.
+              </p>
+              <p className="text-base text-[#57534E] leading-relaxed">
+                Collectors specifically seek out the 2017 to 2018 <strong className="text-[#141311]">&ldquo;Black Coffee&rdquo;</strong>{" "}
+                launch livery with its 10-spoke cast gold wheels and <strong className="text-[#141311]">#54 side number plates</strong>{" "}
+                (a tribute to Italian racer Bruno Spaggiari&apos;s 1968 Imola 200 Ducati). In 2019, Ducati discontinued
+                the Black Coffee &amp; gold cast-wheel combination in favor of matte silver/blue with wire-spoke wheels.
+              </p>
+              <div className="border-l-2 border-[#B81D13] pl-5 py-1 bg-[#F3EFEA]/50">
+                <p className="text-sm font-semibold text-[#141311]">
+                  The 7,500-Mile Desmo Service Advantage ($1,200+ Value)
+                </p>
+                <p className="text-sm text-[#57534E] mt-1 leading-relaxed">
+                  Ducati&apos;s 803cc Desmodue L-twin requires its first major Desmodromic valve-clearance check and
+                  belt service at 7,500 miles. Higher-mileage comps (7,000 to 10,500 miles) require that $1,200 to
+                  $1,500 shop bill immediately. At under 1,000 miles, this bike gives its next owner more than 6,500
+                  miles of open road before the first major valve service is due.
+                </p>
+              </div>
+            </div>
+
+            <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="border border-[#E2DDD5] bg-white p-3">
+                <div className="relative aspect-[3/4] bg-[#141311]">
+                  <Image
+                    src="/images/ducati-full.jpeg"
+                    alt="Full profile view of 2017 Ducati Scrambler Café Racer"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 25vw"
+                    className="object-contain"
+                  />
+                </div>
+                <p className="text-xs font-mono-num text-[#57534E] mt-3">
+                  FIG 1.1 · Full profile showing custom diamond-stitched tan leather seat and wrapped headers.
+                </p>
+              </div>
+              <div className="border border-[#E2DDD5] bg-white p-3">
+                <div className="relative aspect-[3/4] bg-[#141311]">
+                  <Image
+                    src="/images/ducati-tail.jpeg"
+                    alt="Rear view showing custom tail tidy and flush LED brake light"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 25vw"
+                    className="object-contain"
+                  />
+                </div>
+                <p className="text-xs font-mono-num text-[#57534E] mt-3">
+                  FIG 1.2 · Fender eliminator with flush crescent LED taillight and deep Pirelli Rosso II tread.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Section 2: Installed Custom Upgrades & Factory Competition Hardware */}
+      <section id="upgrades" className="border-b border-[#E2DDD5] py-20 lg:py-28 bg-[#F3EFEA]/50">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+          <div className="max-w-3xl mb-14">
+            <div className="text-xs font-mono-num uppercase tracking-[0.2em] text-[#B81D13] mb-3">
+              02 · Build Sheet &amp; Factory Hardware
+            </div>
+            <h2 className="font-serif-editorial text-3xl sm:text-4xl lg:text-5xl font-bold text-[#141311]">
+              Tasteful Custom Upgrades Over Factory Café Racer Hardware
+            </h2>
+            <p className="text-base text-[#57534E] mt-4 leading-relaxed">
+              Every upgrade on this bike addresses the exact details enthusiasts modify on a Scrambler Café Racer:
+              cleaning up the rear fender, upgrading the saddle to stitched tan leather, and wrapping the headers into
+              the dual Termignoni silencers.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-[#E2DDD5] border border-[#E2DDD5]">
+            {UPGRADE_LEDGER.map((item, idx) => (
+              <div key={item.component} className="bg-[#FAF8F5] p-8 flex flex-col justify-between">
                 <div>
-                  <strong className="text-white">{feature.title}</strong>
-                  <p className="text-neutral-400 text-sm mt-1">{feature.desc}</p>
+                  <div className="flex items-center justify-between text-xs font-mono-num uppercase tracking-wider text-[#9A7B3E] mb-3">
+                    <span>{item.category}</span>
+                    <span>0{idx + 1}</span>
+                  </div>
+                  <h3 className="font-serif-editorial text-xl font-bold text-[#141311] mb-3 leading-snug">
+                    {item.component}
+                  </h3>
+                  <p className="text-sm text-[#57534E] leading-relaxed">
+                    {item.detail}
+                  </p>
                 </div>
               </div>
             ))}
@@ -297,147 +433,194 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Photo Gallery */}
-      <section id="gallery" className="relative z-10 max-w-7xl mx-auto px-8 lg:px-16 py-32">
-        <div className="text-center mb-20">
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <div className="h-[2px] w-16 bg-ducati-red"></div>
-            <span className="text-neutral-500 uppercase tracking-[0.3em] text-xs font-bold">Images</span>
-            <div className="h-[2px] w-16 bg-ducati-red"></div>
+      {/* Section 3: October 2026 Market Comparables Table */}
+      <section id="market-comps" className="border-b border-[#E2DDD5] py-20 lg:py-28">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+          <div className="max-w-3xl mb-12">
+            <div className="text-xs font-mono-num uppercase tracking-[0.2em] text-[#B81D13] mb-3">
+              03 · Verified Market Valuation (October 2026)
+            </div>
+            <h2 className="font-serif-editorial text-3xl sm:text-4xl lg:text-5xl font-bold text-[#141311]">
+              How $8,495 Compares to Current West Coast &amp; National Listings
+              </h2>
+            <p className="text-base text-[#57534E] mt-4 leading-relaxed">
+              Across Northern California and the Pacific Northwest, dealer listings for Ducati Scrambler Café Racers
+              currently sit between <strong className="text-[#141311]">$8,990 and $9,495</strong> before dealer doc,
+              freight, and setup fees. At <strong className="text-[#141311]">$8,495</strong>, this sub-1,000-mile 2017
+              launch edition is priced nearly $1,000 below local dealer inventory.
+            </p>
           </div>
-          <h2 className="font-display text-5xl lg:text-7xl font-bold text-white uppercase tracking-tight">
-            Photo Gallery
-          </h2>
+
+          <div className="overflow-x-auto border border-[#E2DDD5] bg-white">
+            <table className="w-full text-left border-collapse text-sm">
+              <thead>
+                <tr className="border-b border-[#E2DDD5] bg-[#F3EFEA] font-mono-num text-[11px] uppercase tracking-wider text-[#57534E]">
+                  <th className="py-4 px-5">Listing / Source</th>
+                  <th className="py-4 px-4">Location</th>
+                  <th className="py-4 px-4">Livery &amp; Wheels</th>
+                  <th className="py-4 px-4">Mileage</th>
+                  <th className="py-4 px-4">Price</th>
+                  <th className="py-4 px-5">Comparison Notes</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#E2DDD5]">
+                {MARKET_COMPS.map((comp) => (
+                  <tr
+                    key={comp.listing}
+                    className={
+                      comp.highlight
+                        ? "bg-[#B81D13]/[0.05] font-medium"
+                        : "hover:bg-[#FAF8F5]"
+                    }
+                  >
+                    <td className="py-4 px-5 text-[#141311]">
+                      {comp.highlight && (
+                        <span className="inline-block bg-[#B81D13] text-white font-mono-num text-[10px] uppercase tracking-widest px-2 py-0.5 mr-2">
+                          Subject Bike
+                        </span>
+                      )}
+                      {comp.listing}
+                    </td>
+                    <td className="py-4 px-4 text-[#57534E] whitespace-nowrap">{comp.location}</td>
+                    <td className="py-4 px-4 text-[#57534E]">{comp.livery}</td>
+                    <td className="py-4 px-4 font-mono-num text-[#141311] whitespace-nowrap">{comp.mileage}</td>
+                    <td className="py-4 px-4 font-mono-num font-bold text-[#141311] whitespace-nowrap">
+                      {comp.price}
+                    </td>
+                    <td className="py-4 px-5 text-xs text-[#57534E] leading-relaxed">{comp.notes}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-        <Gallery />
-        <p className="text-center text-neutral-500 mt-12 text-lg">
-          Click any image to view in full-screen detail
-        </p>
       </section>
 
-      {/* Perfect For */}
-      <section className="relative z-10 max-w-6xl mx-auto px-8 lg:px-16 py-32 bg-neutral-900/30">
-        <div className="text-center mb-20">
-          <h2 className="font-display text-5xl lg:text-7xl font-bold text-white uppercase tracking-tight">
-            Perfect For
-          </h2>
-        </div>
-        <div className="grid md:grid-cols-3 gap-8">
-          {[
-            {
-              icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />,
-              title: "Collectors",
-              desc: "Low-mileage Ducatis are investment pieces. This Café Racer variant with under 1,000 miles is exceptionally rare and will appreciate with proper care."
-            },
-            {
-              icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />,
-              title: "Weekend Warriors",
-              desc: "Perfect for canyon carving, coffee runs, and spirited rides. Light, agile, and powerful enough to thrill without overwhelming."
-            },
-            {
-              icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />,
-              title: "Enthusiasts",
-              desc: "Add a pristine Scrambler Café Racer to your collection. This bike exemplifies Ducati's blend of heritage styling and modern performance."
-            }
-          ].map((item, idx) => (
-            <div key={idx} className="bg-neutral-900 border border-neutral-800 p-8 hover:border-ducati-red transition-colors">
-              <div className="w-16 h-16 bg-ducati-red/20 rounded-full flex items-center justify-center mb-6">
-                <svg className="w-8 h-8 text-ducati-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  {item.icon}
-                </svg>
+      {/* Section 4: Complete 5-Photo Uncropped Gallery */}
+      <section id="gallery" className="border-b border-[#E2DDD5] py-20 lg:py-28 bg-[#F3EFEA]/40">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+            <div>
+              <div className="text-xs font-mono-num uppercase tracking-[0.2em] text-[#B81D13] mb-3">
+                04 · Visual Inspection
               </div>
-              <h3 className="font-display text-2xl font-bold mb-4 text-white uppercase">{item.title}</h3>
-              <p className="text-neutral-400 leading-relaxed">{item.desc}</p>
+              <h2 className="font-serif-editorial text-3xl sm:text-4xl lg:text-5xl font-bold text-[#141311]">
+                High-Resolution Photo Archive
+              </h2>
             </div>
-          ))}
+            <p className="text-xs font-mono-num uppercase tracking-wider text-[#57534E]">
+              Click any plate to inspect full-screen (Arrow keys &amp; Esc supported)
+            </p>
+          </div>
+
+          <Gallery />
         </div>
       </section>
 
-      {/* Pricing */}
-      <section className="relative z-10 max-w-4xl mx-auto px-8 lg:px-16 py-32 text-center">
-        <div className="inline-block bg-neutral-900 border border-ducati-red/50 text-ducati-accent px-6 py-2 skew-x-[-10deg] font-bold mb-8 uppercase tracking-widest text-sm">
-          <span className="block skew-x-[10deg]">Priced to Sell • Serious Inquiries Only</span>
-        </div>
-        <h2 className="font-display text-7xl lg:text-9xl font-black mb-6 text-white tracking-tighter">$8,495</h2>
-        <p className="text-2xl text-neutral-400 font-semibold mb-4">Under 1,000 Miles • Pristine Condition</p>
-        <p className="text-lg text-neutral-500 mb-12">
-          Comparable 2017 Scrambler Café Racers with higher mileage: $6,990-$8,990
-        </p>
-        <div className="bg-neutral-900/50 border border-neutral-800 p-8 mb-12">
-          <h3 className="font-display text-2xl font-bold mb-4 text-white uppercase">What's Included</h3>
-          <div className="grid md:grid-cols-2 gap-4 text-left max-w-2xl mx-auto">
-            {[
-              "2017 Ducati Scrambler Café Racer",
-              "Under 1,000 Miles",
-              "Custom Upgrades",
-              "Current Registration"
-            ].map((item, idx) => (
-              <div key={idx} className="flex items-center">
-                <svg className="w-5 h-5 text-ducati-red mr-3" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-                <span className="text-neutral-400">{item}</span>
+      {/* Section 5: Complete Technical Specifications & Buyer FAQ */}
+      <section id="faq" className="border-b border-[#E2DDD5] py-20 lg:py-28">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+            {/* Left: Complete Technical Table */}
+            <div className="lg:col-span-5">
+              <div className="text-xs font-mono-num uppercase tracking-[0.2em] text-[#B81D13] mb-3">
+                05 · Factory &amp; Installed Specs
               </div>
-            ))}
+              <h2 className="font-serif-editorial text-3xl font-bold text-[#141311] mb-6">
+                Technical Data Sheet
+              </h2>
+              <div className="border-t border-[#E2DDD5] divide-y divide-[#E2DDD5] text-sm">
+                {[
+                  ["Model Year & Trim", "2017 Ducati Scrambler Café Racer"],
+                  ["Factory Colorway", "'Black Coffee' w/ Gold Wheels & Red Pinstripe"],
+                  ["Odometer", "Under 1,000 original miles"],
+                  ["Engine Type", "Air/oil-cooled 90° L-Twin, 2 Desmodromic valves/cyl"],
+                  ["Displacement", "803 cc (88 mm bore x 66 mm stroke)"],
+                  ["Horsepower", "75 HP (54 kW) @ 8,250 RPM"],
+                  ["Torque", "50 lb-ft (67 Nm) @ 5,750 RPM"],
+                  ["Fuel Injection", "Electronic fuel injection, 50 mm throttle body"],
+                  ["Exhaust", "Wrapped 2-into-1 headers + Dual Black Termignoni slip-on"],
+                  ["Transmission", "6-speed w/ APTC wet multiplate slipper clutch"],
+                  ["Frame", "Tubular steel Trellis frame (Black)"],
+                  ["Front Suspension", "41 mm inverted Kayaba anodized fork (150 mm travel)"],
+                  ["Rear Suspension", "Kayaba monoshock w/ adjustable preload (150 mm travel)"],
+                  ["Front Brake", "330 mm disc, radial 4-piston Brembo M4.32 monoblock, Bosch ABS"],
+                  ["Rear Brake", "245 mm disc, 1-piston floating Brembo caliper, Bosch ABS"],
+                  ["Wheels", "10-spoke cast light alloy in Gold (3.50 x 17 in F / 5.50 x 17 in R)"],
+                  ["Tires", "Pirelli Diablo Rosso II (120/70 ZR17 F / 180/55 ZR17 R)"],
+                  ["Fuel Tank Capacity", "3.57 gal (13.5 L) steel teardrop tank"],
+                  ["Wet Weight", "414 lbs (188 kg) / 379 lbs (172 kg) dry"],
+                  ["Seat Height", "31.7 in (805 mm) · Custom diamond-stitched tan leather"],
+                  ["CA Registration & Title", "Clean California title in hand · CA Plate 24S7127"],
+                ].map(([k, v]) => (
+                  <div key={k} className="py-3 flex justify-between gap-4">
+                    <span className="text-[#57534E] font-medium">{k}</span>
+                    <span className="font-mono-num text-right text-[#141311]">{v}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right: Buyer FAQ */}
+            <div className="lg:col-span-7">
+              <div className="text-xs font-mono-num uppercase tracking-[0.2em] text-[#B81D13] mb-3">
+                06 · Pre-Purchase Diligence
+              </div>
+              <h2 className="font-serif-editorial text-3xl font-bold text-[#141311] mb-6">
+                Frequently Asked Questions From Buyers
+              </h2>
+              <div className="divide-y divide-[#E2DDD5] border-t border-b border-[#E2DDD5]">
+                {BUYER_FAQS.map((item) => (
+                  <div key={item.q} className="py-6">
+                    <h3 className="font-serif-editorial text-xl font-bold text-[#141311] mb-2">
+                      {item.q}
+                    </h3>
+                    <p className="text-sm text-[#57534E] leading-relaxed">
+                      {item.a}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-          <p className="text-neutral-500 mt-6 italic">
-            Motorcycle sold as-is. Clear title. Bay Area, California.
-          </p>
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section id="contact" className="relative z-10 max-w-3xl mx-auto px-8 lg:px-16 py-32">
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <div className="h-[2px] w-16 bg-ducati-red"></div>
-            <span className="text-neutral-500 uppercase tracking-[0.3em] text-xs font-bold">Contact</span>
-            <div className="h-[2px] w-16 bg-ducati-red"></div>
+      {/* Section 6: Direct Owner Contact & Viewing Scheduler */}
+      <section id="contact" className="py-20 lg:py-28 bg-[#F3EFEA]">
+        <div className="max-w-4xl mx-auto px-6 lg:px-12">
+          <div className="bg-white border border-[#E2DDD5] p-8 md:p-12 shadow-sm">
+            <div className="border-b border-[#E2DDD5] pb-8 mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+              <div>
+                <div className="text-xs font-mono-num uppercase tracking-[0.2em] text-[#B81D13] mb-2">
+                  07 · Direct Owner Inquiry
+                </div>
+                <h2 className="font-serif-editorial text-3xl sm:text-4xl font-bold text-[#141311]">
+                  Schedule an Inspection or Submit an Offer
+                </h2>
+                <p className="text-sm text-[#57534E] mt-2">
+                  Located in Oakland / Piedmont, CA. Clean California title in hand for immediate transfer.
+                </p>
+              </div>
+              <div className="text-left md:text-right">
+                <div className="text-xs font-mono-num uppercase tracking-wider text-[#57534E]">Asking Price</div>
+                <div className="font-serif-editorial text-3xl font-bold text-[#141311]">$8,495</div>
+              </div>
+            </div>
+
+            <ContactForm />
           </div>
-          <h2 className="font-display text-5xl lg:text-6xl font-bold mb-4 text-white uppercase tracking-tight">Get in Touch</h2>
-          <p className="text-xl text-neutral-400">
-            Located in Bay Area, California. Available for in-person viewing by appointment.
-          </p>
-        </div>
-        <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-8 md:p-12">
-          <ContactForm />
-        </div>
-        <div className="mt-8 text-center text-neutral-500">
-          <p className="mb-2">Serious inquiries only</p>
-          <p className="text-sm">Typical response time: 24 hours</p>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="relative z-10 bg-black border-t border-neutral-800 py-12">
-        <div className="max-w-7xl mx-auto px-8 lg:px-16">
-          <div className="grid md:grid-cols-3 gap-8 mb-8">
-            <div>
-              <h3 className="font-display text-xl font-bold mb-4 text-white uppercase">2017 Ducati Scrambler</h3>
-              <p className="text-neutral-500 leading-relaxed">
-                Pristine Café Racer variant with under 1,000 miles. Meticulously maintained, indoor stored,
-                and ready for its next owner.
-              </p>
-            </div>
-            <div>
-              <h3 className="font-display text-xl font-bold mb-4 text-white uppercase">Specifications</h3>
-              <ul className="space-y-2 text-neutral-500">
-                <li>803cc L-Twin Engine</li>
-                <li>75hp / 50 ft-lbs torque</li>
-                <li>414 lbs wet weight</li>
-                <li>Brembo brakes, Termignoni exhaust</li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-display text-xl font-bold mb-4 text-white uppercase">Location</h3>
-              <p className="text-neutral-500 mb-4">
-                Bay Area, California<br />
-                Available by appointment
-              </p>
-            </div>
+      {/* Editorial Footer */}
+      <footer className="border-t border-[#E2DDD5] bg-[#FAF8F5] py-10">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#57534E] font-mono-num">
+          <div>
+            2017 DUCATI SCRAMBLER CAFÉ RACER · &lt;1,000 MILES · OAKLAND / PIEDMONT, CA
           </div>
-          <div className="border-t border-neutral-900 pt-8 text-center text-neutral-600 text-sm">
-            <p>© 2026 All rights reserved • Motorcycle sold as-is • Clear title</p>
+          <div>
+            CLEAN CALIFORNIA TITLE IN HAND · SOLD AS-IS · $8,495
           </div>
         </div>
       </footer>

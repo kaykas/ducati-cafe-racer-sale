@@ -1,47 +1,42 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Oswald:wght@400;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,400;1,600&display=swap');
 
 :root {
-  --background: #111111;
-  --foreground: #ffffff;
-  --ducati-red: #D50000;
-  --ducati-accent: #FF1744;
+  --canvas: #FAF8F5;
+  --canvas-alt: #F3EFEA;
+  --ink: #141311;
+  --ink-muted: #57534E;
+  --rule: #E2DDD5;
+  --ducati-red: #B81D13;
+  --gold-wheel: #9A7B3E;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-canvas: var(--canvas);
+  --color-canvas-alt: var(--canvas-alt);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-rule: var(--rule);
   --color-ducati-red: var(--ducati-red);
-  --color-ducati-accent: var(--ducati-accent);
-  --color-ducati-dark: #111111;
-  --font-sans: 'Inter', var(--font-geist-sans);
-  --font-display: 'Oswald', system-ui;
+  --color-gold-wheel: var(--gold-wheel);
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-mono: 'JetBrains Mono', monospace;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+.font-serif-editorial {
+  font-family: var(--font-serif);
+  font-variant-numeric: lining-nums;
+}
 
-  .text-stroke-1 {
-    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
-  }
-
-  .text-stroke-2 {
-    -webkit-text-stroke: 2px var(--ducati-red);
-  }
-
-  .clip-angled {
-    clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
-  }
-
-  .bg-grid-pattern {
-    background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=');
-  }
+.font-mono-num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
 }
