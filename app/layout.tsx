@@ -2,18 +2,18 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "2017 Ducati Scrambler Café Racer | Under 1,000 Miles | Bay Area, CA",
+  title: "2017 Ducati Scrambler Café Racer | 519 Original Miles | Bay Area, CA",
   description:
-    "Collector-grade 2017 Ducati Scrambler Café Racer in factory Black Coffee livery with gold 10-spoke wheels, dual Termignoni exhaust, wrapped headers, custom diamond-stitched tan leather seat, and under 1,000 miles. $8,495 in Oakland / Piedmont, CA.",
+    "1-owner, collector-grade 2017 Ducati Scrambler Café Racer in factory Black Coffee livery with gold 10-spoke wheels, dual Termignoni exhaust, wrapped headers, custom diamond-stitched tan leather seat, and 519 original miles. $8,495 in Oakland / Piedmont, CA.",
   keywords:
     "2017 Ducati Scrambler Cafe Racer, Ducati Scrambler Cafe Racer for sale, Black Coffee Ducati Cafe Racer, low mileage Ducati Bay Area, Termignoni exhaust Ducati Scrambler, Oakland motorcycle for sale",
   alternates: {
     canonical: "https://ducati-cafe-racer-sale.vercel.app",
   },
   openGraph: {
-    title: "2017 Ducati Scrambler Café Racer | <1,000 Miles | $8,495",
+    title: "2017 Ducati Scrambler Café Racer | 519 Original Miles | $8,495",
     description:
-      "First-year Black Coffee launch edition with 17-inch gold wheels, Termignoni dual slip-on exhaust, wrapped headers, custom diamond-quilted tan leather saddle, and under 1,000 original miles. Located in Oakland / Piedmont, CA.",
+      "First-year Black Coffee launch edition with 519 verified original miles, 17-inch gold wheels, Termignoni dual slip-on exhaust, wrapped headers, and custom diamond-quilted tan leather saddle. Located in Oakland / Piedmont, CA.",
     type: "website",
     url: "https://ducati-cafe-racer-sale.vercel.app",
     images: [
@@ -27,9 +27,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "2017 Ducati Scrambler Café Racer | <1,000 Miles | $8,495",
+    title: "2017 Ducati Scrambler Café Racer | 519 Original Miles | $8,495",
     description:
-      "Under 1,000 miles. Black Coffee launch livery, Termignoni dual exhaust, diamond-stitched tan leather seat, gold 17-inch wheels. Bay Area, CA.",
+      "Only 519 original miles. Black Coffee launch livery, Termignoni dual exhaust, diamond-stitched tan leather seat, gold 17-inch wheels. Bay Area, CA.",
     images: ["/images/ducati-hero.jpeg"],
   },
 };
@@ -49,7 +49,7 @@ const structuredData = {
       color: "Black Coffee with Red Tank Pinstripe & Gold Wheels",
       mileageFromOdometer: {
         "@type": "QuantitativeValue",
-        value: 950,
+        value: 519,
         unitCode: "SMI",
       },
       vehicleEngine: {
@@ -57,13 +57,14 @@ const structuredData = {
         name: "803cc Air/Oil-Cooled Desmodromic L-Twin (75 HP @ 8,250 RPM)",
       },
       description:
-        "2017 Ducati Scrambler Café Racer with under 1,000 miles in Black Coffee launch livery. Equipped with Termignoni dual slip-on exhaust, wrapped headers, custom diamond-stitched tan leather café seat, tail tidy with flush LED taillight, Brembo M4.32 monoblock front brake, and 17-inch gold 10-spoke wheels.",
+        "1-owner 2017 Ducati Scrambler Café Racer with 519 verified original miles in Black Coffee launch livery. Equipped with Termignoni dual slip-on exhaust, wrapped headers, custom diamond-stitched tan leather café seat, tail tidy with flush LED taillight, Brembo M4.32 monoblock front brake, and 17-inch gold 10-spoke wheels.",
       image: [
         "https://ducati-cafe-racer-sale.vercel.app/images/ducati-hero.jpeg",
         "https://ducati-cafe-racer-sale.vercel.app/images/ducati-full.jpeg",
         "https://ducati-cafe-racer-sale.vercel.app/images/ducati-garage.jpeg",
         "https://ducati-cafe-racer-sale.vercel.app/images/ducati-tail.jpeg",
         "https://ducati-cafe-racer-sale.vercel.app/images/ducati-front.jpeg",
+        "https://ducati-cafe-racer-sale.vercel.app/images/ducati-odometer-519.jpeg",
       ],
       offers: {
         "@type": "Offer",

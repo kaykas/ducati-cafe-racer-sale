@@ -52,6 +52,14 @@ export const BIKE_PHOTOS: GalleryPhoto[] = [
     specNote: "Brembo M4.32 Radial Monoblock · 330mm Front Disc",
     aspect: "aspect-[3/4]",
   },
+  {
+    src: "/images/ducati-odometer-519.jpeg",
+    title: "Verified Odometer Reading: 519 Original Miles",
+    caption:
+      "Ducati digital LCD instrument cluster showing TOT 519 original miles from new. Leaves 6,981 miles of riding before the first 7,500-mile Desmodromic valve service is due.",
+    specNote: "Verified 519 Original Miles (TOT 519) · 1-Owner",
+    aspect: "aspect-[3/4]",
+  },
 ];
 
 export default function Gallery() {

@@ -7,13 +7,13 @@ import Gallery, { BIKE_PHOTOS } from "./components/Gallery";
 
 const MARKET_COMPS = [
   {
-    listing: "THIS BIKE: 2017 Ducati Scrambler Café Racer (Private Seller)",
+    listing: "THIS BIKE: 2017 Ducati Scrambler Café Racer (1-Owner Private Seller)",
     location: "Oakland / Piedmont, CA",
     livery: "2017 'Black Coffee' + Gold 10-Spoke Wheels",
-    mileage: "< 1,000 mi",
-    desmoStatus: "6,500+ mi remaining until 7,500-mi Desmo service",
+    mileage: "519 mi",
+    desmoStatus: "6,981 mi remaining until 7,500-mi Desmo service",
     price: "$8,495",
-    notes: "No dealer freight/doc fees; Termignoni dual exhaust, wrapped headers, custom tan diamond leather seat, tail tidy, tank bag",
+    notes: "1-owner bought new; no dealer freight/doc fees; Termignoni dual exhaust, wrapped headers, custom tan diamond leather seat, tail tidy, tank bag",
     highlight: true,
   },
   {
@@ -109,12 +109,12 @@ const UPGRADE_LEDGER = [
 
 const BUYER_FAQS = [
   {
-    q: "Why does the bike have under 1,000 miles?",
-    a: "It was purchased as a weekend collector piece, kept in a private enclosed garage in Oakland / Piedmont, and ridden sparingly on dry days. It has never been tracked, dropped, or left outdoors.",
+    q: "Why does the bike have only 519 original miles?",
+    a: "I bought it brand new as a weekend collector piece, kept it in a private enclosed garage in Oakland / Piedmont, and rode it sparingly on dry days. The digital odometer reads exactly 519 total miles (TOT 519 — see Plate 06 in the gallery). It has never been tracked, dropped, or left outdoors.",
   },
   {
-    q: "Why does sub-1,000 mileage matter financially on an 803cc Ducati?",
-    a: "Ducati's air-cooled 803cc Desmodue L-twin requires its first major Desmodromic valve-clearance inspection and timing belt service at 7,500 miles (an $1,100 to $1,500 dealership service in the Bay Area). Many used Scramblers listed between $7,500 and $9,400 sit at 6,500 to 10,500 miles and need that service immediately. With under 1,000 miles, this bike has over 6,500 miles of riding before its first valve service is due.",
+    q: "Why does 519 original miles matter financially on an 803cc Ducati?",
+    a: "Ducati's air-cooled 803cc Desmodue L-twin requires its first major Desmodromic valve-clearance inspection and timing belt service at 7,500 miles (an $1,100 to $1,500 dealership service in the Bay Area). Many used Scramblers listed between $7,500 and $9,400 sit at 6,500 to 10,500 miles and need that service immediately. With 519 original miles, this bike has 6,981 miles of open road before its first valve service is due.",
   },
   {
     q: "What makes the 2017 'Black Coffee' Café Racer different from a standard Ducati Scrambler?",
@@ -155,7 +155,7 @@ export default function Home() {
               Market Comps
             </a>
             <a href="#gallery" className="hover:text-[#141311] transition-colors">
-              5-Photo Archive
+              6-Photo Archive
             </a>
             <a href="#faq" className="hover:text-[#141311] transition-colors">
               Buyer FAQ
@@ -177,9 +177,9 @@ export default function Home() {
             {/* Left Column: Editorial Headline, Provenance & Pricing */}
             <div className="lg:col-span-6 lg:pr-4">
               <div className="flex flex-wrap items-center gap-3 text-xs font-mono-num uppercase tracking-widest text-[#B81D13] mb-4">
-                <span>Private Collection · Oakland / Piedmont, CA</span>
+                <span>1-Owner · Oakland / Piedmont, CA</span>
                 <span className="text-[#E2DDD5]">|</span>
-                <span className="text-[#9A7B3E]">Under 1,000 Original Miles</span>
+                <span className="text-[#9A7B3E]">519 Verified Original Miles</span>
               </div>
 
               <h1 className="font-serif-editorial text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.06] text-[#141311] mb-6">
@@ -187,9 +187,9 @@ export default function Home() {
               </h1>
 
               <p className="text-lg text-[#57534E] leading-relaxed mb-8">
-                A collector-grade, sub-1,000-mile example of Ducati&apos;s first-year{" "}
+                A 1-owner, collector-grade <strong className="text-[#141311] font-semibold">519-mile</strong> example of Ducati&apos;s first-year{" "}
                 <strong className="text-[#141311] font-semibold">&ldquo;Black Coffee&rdquo;</strong> Café Racer.
-                Equipped with 17-inch gold 10-spoke cast wheels, Brembo M4.32 monoblock radial brakes, wrapped headers
+                Purchased brand new and always garaged indoors, equipped with 17-inch gold 10-spoke cast wheels, Brembo M4.32 monoblock radial brakes, wrapped headers
                 feeding dual black Termignoni silencers, a custom diamond-stitched tan leather café saddle, and a clean
                 California title in hand.
               </p>
@@ -237,7 +237,7 @@ export default function Home() {
               <dl className="grid grid-cols-2 gap-4 text-xs border-t border-[#E2DDD5] pt-6">
                 <div>
                   <dt className="font-mono-num uppercase tracking-wider text-[#57534E]">Desmo Service Runway</dt>
-                  <dd className="font-semibold text-[#141311] mt-0.5">6,500+ miles until first 7,500-mi valve check</dd>
+                  <dd className="font-semibold text-[#141311] mt-0.5">6,981 miles until first 7,500-mi valve check</dd>
                 </div>
                 <div>
                   <dt className="font-mono-num uppercase tracking-wider text-[#57534E]">Title &amp; Registration</dt>
@@ -270,8 +270,8 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* 5-Thumbnail Selector Strip */}
-              <div className="grid grid-cols-5 gap-2.5 mt-3">
+              {/* 6-Thumbnail Selector Strip */}
+              <div className="grid grid-cols-6 gap-2 mt-3">
                 {BIKE_PHOTOS.map((photo, idx) => (
                   <button
                     key={photo.src}
@@ -303,7 +303,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 divide-y md:divide-y-0 md:divide-x divide-[#E2DDD5]">
             {[
-              { label: "Odometer", value: "< 1,000 mi", sub: "Original miles" },
+              { label: "Odometer", value: "519 mi", sub: "Verified original miles" },
               { label: "Engine", value: "803cc L-Twin", sub: "Air/oil Desmodromic" },
               { label: "Output", value: "75 HP / 50 lb-ft", sub: "@ 8,250 / 5,750 RPM" },
               { label: "Front Brake", value: "Brembo M4.32", sub: "330mm radial + ABS" },
@@ -333,7 +333,7 @@ export default function Home() {
                 01 · Provenance &amp; Specification
               </div>
               <h2 className="font-serif-editorial text-3xl sm:text-4xl lg:text-5xl font-bold text-[#141311] leading-tight">
-                The 2017 &ldquo;Black Coffee&rdquo; Launch Edition, Preserved Under 1,000 Miles
+                The 2017 &ldquo;Black Coffee&rdquo; Launch Edition, Preserved at 519 Original Miles
               </h2>
               <p className="text-base text-[#57534E] leading-relaxed">
                 When Ducati introduced the Scrambler Café Racer for the 2017 model year ($11,395 MSRP), it was not a
@@ -355,7 +355,7 @@ export default function Home() {
                 <p className="text-sm text-[#57534E] mt-1 leading-relaxed">
                   Ducati&apos;s 803cc Desmodue L-twin requires its first major Desmodromic valve-clearance check and
                   belt service at 7,500 miles. Higher-mileage comps (7,000 to 10,500 miles) require that $1,200 to
-                  $1,500 shop bill immediately. At under 1,000 miles, this bike gives its next owner more than 6,500
+                  $1,500 shop bill immediately. At 519 original miles, this bike gives its next owner 6,981
                   miles of open road before the first major valve service is due.
                 </p>
               </div>
@@ -534,7 +534,7 @@ export default function Home() {
                   ["Model Year & Trim", "2017 Ducati Scrambler Café Racer"],
                   ["VIN", "ZDM15ANM7HB020905"],
                   ["Factory Colorway", "'Black Coffee' w/ Gold Wheels & Red Pinstripe"],
-                  ["Odometer", "Under 1,000 original miles"],
+                  ["Odometer", "519 verified original miles (TOT 519)"],
                   ["Engine Type", "Air/oil-cooled 90° L-Twin, 2 Desmodromic valves/cyl"],
                   ["Displacement", "803 cc (88 mm bore x 66 mm stroke)"],
                   ["Horsepower", "75 HP (54 kW) @ 8,250 RPM"],
@@ -618,7 +618,7 @@ export default function Home() {
       <footer className="border-t border-[#E2DDD5] bg-[#FAF8F5] py-10">
         <div className="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#57534E] font-mono-num">
           <div>
-            2017 DUCATI SCRAMBLER CAFÉ RACER · &lt;1,000 MILES · OAKLAND / PIEDMONT, CA
+            2017 DUCATI SCRAMBLER CAFÉ RACER · 519 ORIGINAL MILES · OAKLAND / PIEDMONT, CA
           </div>
           <div>
             CLEAN CALIFORNIA TITLE IN HAND · SOLD AS-IS · $8,495
